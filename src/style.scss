@@ -1,0 +1,36 @@
+$color-available: #12f2a0;
+$color-booked: #ff8b94;
+$color-premium: #ab48f8;
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+#roomsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+.room {
+    border: 2px solid #333;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+
+&.available {
+    background-color: $color-available;
+}
+&.booked {
+    background-color: $color-booked;
+}
+&.premium-room {
+    background-color: $color-premium;
+}
+}
+
+.reviews {
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 0.5rem;
+}
