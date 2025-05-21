@@ -124,3 +124,40 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   sessionStorage.removeItem("loggedInUser");
   location.reload();
 });
+
+document.addReview = async function () {
+  const email = document.getElementById("reviewEmail").value.trim();
+  const roomNumber = parseInt(document.getElementById("reviewRoom").value);
+  const body = document.getElementById("reviewBody").value.trim();
+
+  if (!email || isNaN(roomNumber) || !body) {
+    alert("Invalid input");
+    return;
+  }
+
+  const review = {
+    email,
+    roomNumber,
+    body,
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/reviews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(review)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add review");
+    }
+
+    alert("Review added!");
+    loadReviews(roomNumber);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to add review.");
+  }
+};
