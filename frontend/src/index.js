@@ -69,7 +69,12 @@ window.loadReviews = async function (number) {
     const sample = reviews.filter((r) => Number(r.roomNumber) === Number(number)).slice(0, 3);
     reviewsContainer.innerHTML = 
       sample
-        .map((r) => `<p><strong>${r.email}</strong>: ${r.body}</p>`)
+        .map((r) => `
+          <div id="review-${r.id}">
+            <p><strong>${r.email}</strong>: ${r.body}</p>
+            <button onclick="editReview('${r.id}')">Edit</button>
+          </div>
+        `)
         .join("") || "No reviews yet.";
   } catch (err) {
     reviewsContainer.innerHTML = "<p style='color: red;'>Failed to load reviews.</p>";
@@ -159,5 +164,34 @@ document.addReview = async function () {
   } catch (err) {
     console.error(err);
     alert("Failed to add review.");
+  }
+};
+
+window.editReview = async function (id) {
+  const email = prompt("New email:");
+  const body = prompt("New review text:");
+  const roomNumber = parseInt(prompt("Room number:"), 10);
+
+  if (!email || !body || isNaN(roomNumber)) {
+    alert("Invalid input");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/reviews/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, body, roomNumber }),
+    });
+
+    if (response.ok) {
+      alert("Review updated!");
+      loadReviews(roomNumber);
+    } else {
+      alert("Failed to update review.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("An error occurred while updating the review.");
   }
 };

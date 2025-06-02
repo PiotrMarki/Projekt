@@ -34,3 +34,25 @@ db.data.reviews.push(newReview);
 await db.write();
 res.json({ message: "Review added. ", review: newReview });
 });
+
+app.put("/reviews/:id", async (req, res) => {
+    const { id } = req.params;
+    const { roomNumber, email, body } = req.body;
+
+    await db.read();
+    const index = db.data.reviews.findIndex((r) => r.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ message: "Review not found." });
+    }
+
+    db.data.reviews[index] = {
+        ...db.data.reviews[index],
+        roomNumber,
+        email,
+        body,
+    };
+
+    await db.write();
+    res.json({ message: "Review updated.", review: db.data.reviews[index] });
+});
