@@ -1,12 +1,6 @@
 {
   "reviews": [
     {
-      "id": "djB-n0H5hxT9AU",
-      "roomNumber": 102,
-      "email": "malgo@op.pl",
-      "body": "Very clean rooms"
-    },
-    {
       "id": "sdB-n0H5hxTsfef9AU",
       "roomNumber": 101,
       "email": "malgoeloo@op.pl",
@@ -29,12 +23,6 @@
       "roomNumber": 201,
       "email": "kacper.bartos@op.pl",
       "body": "So So So So Nice!!!"
-    },
-    {
-      "id": "5uIQFpyIiddm8pZVAvMCT",
-      "roomNumber": 102,
-      "email": "Testowy@op.pl",
-      "body": "Testowa recenzja!!!"
     }
   ]
 }

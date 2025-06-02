@@ -3,7 +3,7 @@ class UI {
       this.hotel = hotel;
     }
   
-    renderRooms() {
+    renderRooms(reviews = []) {
       const container = document.getElementById("roomsContainer");
       container.innerHTML = "";
   
@@ -26,11 +26,20 @@ class UI {
         const canBook = room.isAvailable && isLoggedIn;
         const canCancel = !room.isAvailable && room.bookedBy === loggedInUsername;
   
+        const reviewCount = reviews.filter(
+          (r) => r.roomNumber === room.number
+        ).length;
+        const reviewInfo = 
+          reviewCount === 0
+            ? `<p><strong>Reviews:</strong> No reviews yet</p>`
+            : `<p><strong>Reviews:</strong> ${reviewCount}</p>`;
+
         roomDiv.innerHTML = `
           <h3>Room ${room.number} (${room.type})</h3>
           <p>Status: ${room.isAvailable ? "Available" : "Booked"}</p>
           ${room.premiumService ? `<p><strong>Service:</strong> ${room.premiumService}</p>` : ""}
           ${bookedByInfo}
+          ${reviewInfo}
           <button onclick="bookRoom(${room.number})" ${canBook ? "" : "disabled"}>Book</button>
           <button onclick="cancelBooking(${room.number})" ${canCancel ? "" : "disabled"}>Cancel</button>
           <button class="load-reviews-btn" data-id="${room.number}">Load Reviews</button>

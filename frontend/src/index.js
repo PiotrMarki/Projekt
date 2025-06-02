@@ -22,7 +22,19 @@ if (hotel.rooms.length === 0) {
 }
 
 const ui = new UI(hotel);
-ui.renderRooms();
+
+async function loadRoomWithReviews() {
+  let reviews = [];
+  try {
+    const response = await fetch("http://localhost:3000/reviews");
+    reviews = await response.json();
+  } catch (e) {
+    console.warn("Could not load reviews", e);
+  }
+  ui.renderRooms(reviews);
+}
+
+loadRoomWithReviews();
 
 window.bookRoom = function (number) {
   const room = hotel.rooms.find(r => r.number === number);
@@ -73,6 +85,7 @@ window.loadReviews = async function (number) {
           <div id="review-${r.id}">
             <p><strong>${r.email}</strong>: ${r.body}</p>
             <button onclick="editReview('${r.id}')">Edit</button>
+            <button onclick="deleteReview('${r.id}', ${r.roomNumber})">Delete</button>
           </div>
         `)
         .join("") || "No reviews yet.";
@@ -193,5 +206,27 @@ window.editReview = async function (id) {
   } catch (err) {
     console.error(err);
     alert("An error occurred while updating the review.");
+  }
+};
+
+window.deleteReview = async function (id, roomNumber) {
+  console.log("Deleting review with ID:", id, "for room:", roomNumber);
+  const confirmed = confirm("Are you sure you want to delete this review?");
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch(`http://localhost:3000/reviews/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      alert("Review deleted!");
+      loadReviews(roomNumber);
+    } else {
+      alert("Failed to delete review.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("An error occurred while deleting the review.");
   }
 };

@@ -56,3 +56,19 @@ app.put("/reviews/:id", async (req, res) => {
     await db.write();
     res.json({ message: "Review updated.", review: db.data.reviews[index] });
 });
+
+app.delete("/reviews/:id", async (req, res) => {
+    const { id } = req.params;
+
+    await db.read();
+    const index = db.data.reviews.findIndex((r) => r.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ message: "Review not found." });
+    }
+
+    db.data.reviews.splice(index, 1);
+    await db.write();
+
+    res.json({ message: "Review deleted!" });
+});
