@@ -24,5 +24,15 @@
       "email": "kacper.bartos@op.pl",
       "body": "So So So So Nice!!!"
     }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "username": "kilbasa",
+      "password": "$2b$10$4gcUUa98PtaGiml8ITovJufixZ8sqhnedWvRD/PO/y2sPMirq0z.u"
+    }
   ]
 }

@@ -4,13 +4,14 @@ import bodyParser from 'body-parser';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { nanoid } from 'nanoid';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 const adapter = new JSONFile("db.json");
-const db = new Low(adapter, { reviews: [] });
+const db = new Low(adapter, { reviews: [], users: [] });
 
 app.listen(PORT, () => {
 console.log(`Server running at http://localhost:${PORT}`);
@@ -71,4 +72,36 @@ app.delete("/reviews/:id", async (req, res) => {
     await db.write();
 
     res.json({ message: "Review deleted!" });
+});
+
+app.post("/signup", async (req, res) => {
+  await db.read();
+  db.data.users ||= []; // jeśli nie ma tablicy users, to ją twórz
+
+  const { username, password } = req.body;
+
+  const exists = db.data.users.find(u => u.username === username);
+  if (exists) return res.status(400).json({ error: "Username already taken" });
+
+  const hashed = bcrypt.hashSync(password, 10);
+  db.data.users.push({ username, password: hashed });
+
+  await db.write();
+
+  res.json({ username });
+});
+
+app.post("/login", async (req, res) => {
+  await db.read();
+  db.data.users ||= [];
+
+  const { username, password } = req.body;
+
+  const user = db.data.users.find(u => u.username === username);
+  if (!user) return res.status(400).json({ error: "User not found" });
+
+  const isMatch = bcrypt.compareSync(password, user.password);
+  if (!isMatch) return res.status(400).json({ error: "Invalid password" });
+
+  res.json({ username });
 });
